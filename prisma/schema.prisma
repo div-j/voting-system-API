@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js" 
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+
+}
+
+model User {
+  id             String   @id @default(uuid())
+  fullName       String
+  email          String   @unique
+  password       String
+  role           Role     @default(USER)
+  profilePicture String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  competitions   Competition[] // One-to-many relationship with Competition
+  votes          Vote[]        // One-to-many relationship with Vote
+}
+
+model Competition {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      String    // Foreign key to User
+  user        User      @relation(fields: [userId], references: [id])
+  options     Option[]  // One-to-many relationship with Option
+  votes       Vote[]    // One-to-many relationship with Vote
+}
+
+model Option {
+  id            String      @id @default(uuid())
+  name          String
+  description   String?
+  imageUrl      String?
+  voteCount     Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  competitionId String      // Foreign key to Competition
+  competition   Competition @relation(fields: [competitionId], references: [id])
+  votes         Vote[]      // One-to-many relationship with Vote
+}
+
+model Vote {
+  id            String      @id @default(uuid())
+  userId        String
+  optionId      String
+  competitionId String
+  createdAt     DateTime    @default(now())
+  user          User        @relation(fields: [userId], references: [id])
+  option        Option      @relation(fields: [optionId], references: [id])
+  competition   Competition @relation(fields: [competitionId], references: [id])
+
+  @@unique([userId, competitionId])
+}
+
+enum Role {
+  SUPER_ADMIN
+  USER
+}
+
+
