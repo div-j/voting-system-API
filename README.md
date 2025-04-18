@@ -1,6 +1,11 @@
 # Competition Voting System Backend
 
-A robust backend system for managing competitions and voting, built with Node.js, Express, and Prisma.
+## 📋 Project Overview
+This is a role-based voting system backend API that allows users to create and participate in competitions. The system supports two types of users:
+- Regular Users: Can create competitions, add options, vote, and manage their own competitions
+- Super Admin: Has elevated privileges to view and moderate all competitions
+
+The system features JWT-based authentication, role-based access control, and a comprehensive API for managing competitions, options, and votes.
 
 ## 🚀 Features
 
@@ -73,7 +78,66 @@ npx prisma migrate dev
 npm start
 ```
 
-## 📚 API Documentation
+## 🐳 Running with Docker
+
+1. Make sure Docker and Docker Compose are installed on your system
+
+2. Build and start the containers:
+```bash
+docker compose up --build
+```
+
+3. The application will be available at:
+- API: http://localhost:5000
+- Swagger UI: http://localhost:5000/api-docs
+
+4. To stop the containers:
+```bash
+docker compose down
+```
+
+## 🔑 Environment Variables (.env.example)
+
+Create a `.env` file based on this example:
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/competition_db"
+DIRECT_URL="postgresql://user:password@localhost:5432/competition_db"
+
+# JWT
+JWT_SECRET="your-secret-key-here"
+
+# Server
+PORT=5000
+NODE_ENV=development
+
+# Optional: Logging
+LOG_LEVEL=info
+```
+
+## 📚 Swagger API Documentation
+
+The API documentation is available through Swagger UI:
+
+1. Access the Swagger UI at `/api-docs` when the server is running
+2. All endpoints are documented with:
+   - Request/response schemas
+   - Authentication requirements
+   - Example requests
+   - Response codes
+
+3. To test endpoints in Swagger:
+   - Click on an endpoint
+   - Click "Try it out"
+   - Fill in the required parameters
+   - Click "Execute"
+
+4. For authenticated endpoints:
+   - Click the "Authorize" button
+   - Enter your JWT token in the format: `Bearer your-token-here`
+   - Click "Authorize"
+
+
 
 The API documentation is available at `/api-docs` when the server is running. It includes:
 
@@ -126,12 +190,6 @@ Authorization: Bearer <token>
 - `GET /api/admin/competitions` - Get all competitions (admin view)
 - `DELETE /api/admin/competitions/:id` - Delete any competition
 
-## 🧪 Testing
-
-Run tests with:
-```bash
-npm test
-```
 
 ## 📊 Database Schema
 
